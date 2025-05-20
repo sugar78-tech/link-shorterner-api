@@ -17,7 +17,9 @@ import { Link } from './links/entities/link.entity';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [Link],
-      synchronize: process.env.NODE_ENV === 'development',
+      // TODO: Remove this in prod
+      // synchronize: process.env.NODE_ENV === 'development',
+      synchronize: true,
     }),
   ],
   controllers: [AppController],
