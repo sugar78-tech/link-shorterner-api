@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 import { Link } from './entities/link.entity';
@@ -12,8 +12,19 @@ export class LinksService {
     private linkRepository: Repository<Link>,
   ) {}
 
-  create(createLinkDto: CreateLinkDto) {
-    return this.linkRepository.save(createLinkDto);
+  async create(createLinkDto: CreateLinkDto) {
+    const findedLink = await this.linkRepository.findOne({
+      where: { shortedUrl: createLinkDto.shortedUrl, isDeleted: false },
+    });
+    if (findedLink) {
+      throw new HttpException('Link already exists', HttpStatus.BAD_REQUEST);
+    }
+    return this.linkRepository.save({
+      ...createLinkDto,
+      isDeleted: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
   }
 
   findAll(page = 1, limit = 10) {
@@ -28,14 +39,26 @@ export class LinksService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} link`;
+    return this.linkRepository.findOne({ where: { id, isDeleted: false } });
   }
 
-  update(id: number, updateLinkDto: UpdateLinkDto) {
-    return `This action updates a #${id} link`;
+  async update(id: number, updateLinkDto: UpdateLinkDto) {
+    const findedLink = await this.linkRepository.findOne({
+      where: { id, isDeleted: false },
+    });
+    if (!findedLink) {
+      throw new HttpException('Link not found', HttpStatus.NOT_FOUND);
+    }
+    return this.linkRepository.update(id, updateLinkDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} link`;
+  async remove(id: number) {
+    const findedLink = await this.linkRepository.findOne({
+      where: { id, isDeleted: false },
+    });
+    if (!findedLink) {
+      throw new HttpException('Link not found', HttpStatus.NOT_FOUND);
+    }
+    return this.linkRepository.update(id, { isDeleted: true });
   }
 }
