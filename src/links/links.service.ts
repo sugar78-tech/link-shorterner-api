@@ -16,8 +16,15 @@ export class LinksService {
     return this.linkRepository.save(createLinkDto);
   }
 
-  findAll() {
-    return `This action returns all links`;
+  findAll(page = 1, limit = 10) {
+    return this.linkRepository.findAndCount({
+      where: { isDeleted: false },
+      order: {
+        createdAt: 'DESC',
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
   }
 
   findOne(id: number) {

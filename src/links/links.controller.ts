@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { LinksService } from './links.service';
 import { CreateLinkDto } from './dto/create-link.dto';
@@ -17,13 +19,15 @@ export class LinksController {
 
   @Post()
   create(@Body() createLinkDto: CreateLinkDto) {
-    console.log(createLinkDto);
     return this.linksService.create(createLinkDto);
   }
 
   @Get()
-  findAll() {
-    return this.linksService.findAll();
+  findAll(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ) {
+    return this.linksService.findAll(page, limit);
   }
 
   @Get(':id')
