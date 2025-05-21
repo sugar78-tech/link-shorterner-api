@@ -8,6 +8,15 @@ export class Link {
   @Column()
   url: string;
 
-  @Column()
+  @Column({ unique: true })
   shortedUrl: string;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
 }
