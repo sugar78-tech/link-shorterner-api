@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { LinksService } from './links.service';
 import { CreateLinkDto } from './dto/create-link.dto';
@@ -24,8 +25,8 @@ export class LinksController {
 
   @Get()
   findAll(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ) {
     return this.linksService.findAll(page, limit);
   }
