@@ -28,7 +28,7 @@ export class LinksService {
   }
 
   findAll(page = 1, limit = 10) {
-    return this.linkRepository.findAndCount({
+    return this.linkRepository.find({
       where: { isDeleted: false },
       order: {
         createdAt: 'DESC',
