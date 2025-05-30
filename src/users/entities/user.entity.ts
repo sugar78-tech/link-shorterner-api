@@ -8,6 +8,7 @@ import {
   IsBoolean,
   IsEmail,
 } from 'class-validator';
+import { Unique } from 'typeorm';
 
 @Entity()
 export class User {
@@ -21,8 +22,10 @@ export class User {
   @MaxLength(20)
   name: string;
 
-  @Column()
+  @Column({ unique: true })
   @IsNotEmpty()
+  @IsString()
+  @Unique(['email'])
   @IsEmail()
   email: string;
 
@@ -41,8 +44,9 @@ export class User {
   @IsDate()
   updatedAt: Date;
 
-  @Column({ nullable: true, default: null })
-  deletedAt: Date | null;
+  @Column({ default: new Date() })
+  @IsDate()
+  deletedAt: Date;
 
   @Column({ default: true })
   @IsNotEmpty()

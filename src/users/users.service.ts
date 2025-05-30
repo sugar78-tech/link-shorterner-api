@@ -12,17 +12,17 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async findOne(id: string) {
+  async findOneByEmail(email: string) {
     return await this.usersRepository.findOne({
-      where: { id },
+      where: { email },
       select: {
-        id: true,
         name: true,
         email: true,
         createdAt: true,
         updatedAt: true,
         deletedAt: true,
         isActive: true,
+        password: true,
       },
     });
   }

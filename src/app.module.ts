@@ -5,6 +5,9 @@ import { ConfigModule } from '@nestjs/config';
 import { LinksModule } from './links/links.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Link } from './links/entities/link.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -16,11 +19,13 @@ import { Link } from './links/entities/link.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [Link],
+      entities: [Link, User],
       // TODO: Remove this in prod
       // synchronize: process.env.NODE_ENV === 'development',
       synchronize: true,
     }),
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

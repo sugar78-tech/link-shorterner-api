@@ -1,12 +1,15 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { ConsoleLogger, ValidationPipe } from '@nestjs/common';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     // Logger Config if needed in the future
-    logger: new Logger(),
+    logger: new ConsoleLogger({
+      timestamp: true,
+      logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
+    }),
   });
   app.enableCors({
     origin: process.env.FRONTEND_URL,
