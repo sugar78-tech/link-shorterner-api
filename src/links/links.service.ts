@@ -14,14 +14,13 @@ export class LinksService {
 
   async create(createLinkDto: CreateLinkDto) {
     const findedLink = await this.linkRepository.findOne({
-      where: { shortedUrl: createLinkDto.shortedUrl, isDeleted: false },
+      where: { shortedUrl: createLinkDto.shortedUrl },
     });
     if (findedLink) {
       throw new HttpException('Link already exists', HttpStatus.BAD_REQUEST);
     }
     return this.linkRepository.save({
       ...createLinkDto,
-      isDeleted: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -29,7 +28,6 @@ export class LinksService {
 
   findAll(page = 1, limit = 10) {
     return this.linkRepository.find({
-      where: { isDeleted: false },
       order: {
         createdAt: 'DESC',
       },
@@ -38,13 +36,13 @@ export class LinksService {
     });
   }
 
-  findOne(id: number) {
-    return this.linkRepository.findOne({ where: { id, isDeleted: false } });
+  findOne(id: string) {
+    return this.linkRepository.findOne({ where: { id } });
   }
 
-  async update(id: number, updateLinkDto: UpdateLinkDto) {
+  async update(id: string, updateLinkDto: UpdateLinkDto) {
     const findedLink = await this.linkRepository.findOne({
-      where: { id, isDeleted: false },
+      where: { id },
     });
     if (!findedLink) {
       throw new HttpException('Link not found', HttpStatus.NOT_FOUND);
@@ -52,13 +50,13 @@ export class LinksService {
     return this.linkRepository.update(id, updateLinkDto);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const findedLink = await this.linkRepository.findOne({
-      where: { id, isDeleted: false },
+      where: { id },
     });
     if (!findedLink) {
       throw new HttpException('Link not found', HttpStatus.NOT_FOUND);
     }
-    return this.linkRepository.update(id, { isDeleted: true });
+    return this.linkRepository.delete(id);
   }
 }
